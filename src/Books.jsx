@@ -1,13 +1,10 @@
 import React from "react";
 import { saveAs } from 'file-saver';
-import dayjs from 'dayjs';
-import os from 'os';
+import './books.css';
 
-// https://stackoverflow.com/a/12989543
-const NEW_LINE = os.EOL;
+const NEW_LINE = '\n';
 
 export class Books extends React.Component {
-
     constructor(props) {
         super(props);
         this.exportAll = this.exportAll.bind(this)
@@ -35,20 +32,14 @@ export class Books extends React.Component {
                 <div className="mt-5 is-flex is-justify-content-center is-align-items-center">
                     <h3 className="is-size-4">Books</h3>
                     <button onClick={this.exportAll} className="ml-3 button is-rounded is-info is-small">Download</button></div>
-                <div>
-                    {
-                        this.props.books?.map(book =>
-                        (
-                            <div className="conversation-block" >
-                                <Book book={book}
-                                    showTime={this.props.showTime}
-                                    showPosition={this.props.showPosition}
-                                    insertLineAfterNote={this.props.insertLineAfterNote} />
-                            </div>
-                        )
-                        )
-                    }
-                </div>
+                {
+                    this.props.books?.map((book, index) => <Book book={book}
+                        showTime={this.props.showTime}
+                        showPosition={this.props.showPosition}
+                        insertLineAfterNote={this.props.insertLineAfterNote}
+                        key={`book-${index}`} />
+                    )
+                }
             </div>
         )
     }
@@ -64,52 +55,51 @@ function convertToString(book, showTime, showPosition, insertLineAfterNote) {
     ).join(separator)
 }
 
-class Book extends React.Component {
+const Book = (props) => {
+    const [showNote, setShowNote] = React.useState(false);
 
-    constructor(props) {
-        super(props);
-        this.export = this.export.bind(this)
-    }
-
-    export() {
-        let conversationString = convertToString(this.props.book,
-            this.props.showTime, this.props.showPosition, this.props.insertLineAfterNote)
+    const exportTxtFile = e => {
+        e.stopPropagation();
+        let conversationString = convertToString(props.book,
+            props.showTime, props.showPosition, props.insertLineAfterNote)
 
         var blob = new Blob([conversationString],
             { type: "text/plain;charset=utf-8" });
 
-        saveAs(blob, `${this.props.book.header} notes.txt`)
+        saveAs(blob, `${props.book.header} notes.txt`)
     }
 
-    render() {
-        return (
-            <div className="mt-5 is-flex is-justify-content-center is-align-items-center is-flex-direction-column">
-                <div className="mt-5 is-flex is-justify-content-center is-align-items-center">
-                    <b>{this.props.book?.header}</b>
-
-                    <button onClick={this.export} className="ml-3 button is-rounded is-info is-small">Download</button>
-                </div>
-
+    return (
+        <div className="book-wrapper">
+            <div onClick={(_e) => setShowNote(!showNote)} className="book-header is-flex is-justify-content-center is-align-items-center">
                 <div>
-                    {
-                        this.props.book?.notes.map(note =>
-                        (
-                            <div>
-                                <Note note={note}
-                                    showTime={this.props.showTime}
-                                    showPosition={this.props.showPosition} />
-                                {
-                                    this.props.insertLineAfterNote &&
-                                    <> <br></br> </>
-                                }
-                            </div>
-                        )
-                        )
-                    }
+                    <b>{props.book?.header}</b> {props.book?.notes.length} highlights.
                 </div>
-            </div >
-        );
-    }
+
+                <span className="ml-3 book-download" title="Download as a txt file" onClick={exportTxtFile}>Download</span>
+            </div>
+
+            {
+                showNote && 
+                props.book?.notes.map((note, index) =>
+                    (
+                        <>
+                            <Note note={note}
+                                showTime={props.showTime}
+                                showPosition={props.showPosition}
+                                key={`note-${index}`}
+                                firstChild={index == 0}
+                                index={index} />
+                            {
+                                props.insertLineAfterNote &&
+                                <> <br></br> </>
+                            }
+                        </>
+                    )
+                )
+            }
+        </div>
+    );
 }
 
 function timeToString(time) {
@@ -117,19 +107,12 @@ function timeToString(time) {
 }
 
 function Note(props) {
-
-    var localizedFormat = require('dayjs/plugin/localizedFormat')
-    dayjs.extend(localizedFormat)
-
     return (
-
-        < div className="is-flex" >
-            <div className="ml-2" style={{ maxWidth: "500px" }}>
-
-
-                {props.note?.text}
-
-                <span className=" is-size-7">
+        <div className="note ml-2" style={{ maxWidth: "500px", marginTop: props.firstChild ? "15px" : 0 }}>
+            <span className="note-index">{Number(props.index)+1}.</span>
+            <div>
+                <p>{props.note?.text}</p>
+                <div className=" is-size-7">
                     {props.showPosition &&
                         <span className="ml-2">
                             <NotePosition note={props.note} />
@@ -137,12 +120,15 @@ function Note(props) {
                     }
                     {props.showTime && props.note?.date &&
                         <span className="ml-2">
-                            {timeToString(props.note?.date)}
+                            , {new Intl.DateTimeFormat('en-GB', {
+                                dateStyle: 'full',
+                                timeStyle: 'long',
+                            }).format(props.note?.date)}
                         </span>
                     }
-                </span>
+                </div>
             </div>
-        </div >
+        </div>
     );
 }
 

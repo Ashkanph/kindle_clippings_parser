@@ -6,9 +6,9 @@ When you highlight something on your Kindle, it goes into My Clippings.txt file 
 
 ## Can I try it out?
 
-https://becausecurious.me/kindle_clippings_parser
+https://ashkanph.github.io/kindle_clippings_parser
 
 
 ## To run on your machine
 
-In the project directory run `npm start`.
+First install the dependencies in the project directory (`npm i`) and then run `npm dev`.

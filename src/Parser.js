@@ -93,7 +93,7 @@ const parseGermanDateToken = (token) => {
 }
 
 export const parseEnglishLocationToken = (token) => {
-    const REGEXP = /([Ll]ocation|Highlight Loc\.) (?<location_start>\d+)(-(?<location_end>\d+))?/
+    const REGEXP = /(on page|[Ll]ocation|Highlight Loc\.) (?<location_start>\d+)(-(?<location_end>\d+))?/
     let match = token.match(REGEXP)
     if (match === null) {
         return {}
@@ -189,9 +189,9 @@ export const parseNoteLineBlock = (noteLines) => {
 }
 
 export const parseGermanDate = (date) => {
-    var customParseFormat = require('dayjs/plugin/customParseFormat')
-    dayjs.extend(customParseFormat)
-    require('dayjs/locale/de')
+    // var customParseFormat = require('dayjs/plugin/customParseFormat')
+    // dayjs.extend(customParseFormat)
+    // require('dayjs/locale/de')
 
     // Sonntag, 27. September 2020 4.48 Uhr GMT+07:29
     let parsed_date = date.split(', ')[1]

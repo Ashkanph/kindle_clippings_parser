@@ -3,6 +3,10 @@
 }
 
 .App {
+  padding: 25px;
+}
+
+.App .title, .App .checkbox-wrapper {
   text-align: center;
 }
 

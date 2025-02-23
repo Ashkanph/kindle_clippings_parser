@@ -1,0 +1,23 @@
+.book-header {
+  background-color: #eee;
+  border: 1px solid #999;
+  cursor: pointer;
+  padding: 8px;
+  margin-top: 20px;
+}
+
+.note {
+  display: flex;
+}
+
+.note-index {
+  font-size: 22px;
+  font-weight: bold;
+  color: tomato;
+  margin-right: 15px;
+}
+
+.book-download {
+  color: #2366d1;
+  font-weight: bold;
+}

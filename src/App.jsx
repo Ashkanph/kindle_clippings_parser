@@ -4,9 +4,10 @@ import React from "react";
 
 import { parse } from './Parser.js'
 
-import { Books } from './Books.js'
-import Checkbox from "./Checkbox.js";
-import DragAndDrop from './DragAndDrop';
+import { Books } from './Books.jsx'
+import Statistics from './components/Statistics.jsx'
+import Checkbox from "./Checkbox.jsx";
+import DragAndDrop from './DragAndDrop.jsx';
 
 import sample_de from './samples/Meine Clippings.txt'
 import sample_en from './samples/My Clippings.txt'
@@ -100,7 +101,7 @@ class App extends React.Component {
           Kindle Clippings Parser
         </h1>
 
-        <div className="is-flex is-justify-content-center">
+        <div className="is-flex is-justify-content-center"  style={{ textAlign: "center" }}>
           <div style={{ maxWidth: "500px" }}>
             {
               this.state.processedNotes === null && this.state.lastError === null &&
@@ -109,7 +110,7 @@ class App extends React.Component {
                   What is this?
                 </h2>
 
-                <p>
+                <div>
                   When you highlight something on your Kindle,
                   it goes into <code>My Clippings.txt</code> file and it is not grouped by a book:
 
@@ -118,7 +119,7 @@ class App extends React.Component {
                   <div className="is-size-7" style={{ wordBreak: "break-all" }}>
 
                   </div>
-                </p>
+                </div>
 
                 <div className="my-code is-size-7">
                   {`Essays (Paul Graham)
@@ -143,7 +144,7 @@ I don't think Apple realizes how badly the App Store approval process is broken.
 ==========`}
                 </div>
 
-                <p className="mt-2">
+                <div className="mt-2">
                   This app converts that to
 
                   <div className="my-code is-size-7">
@@ -158,7 +159,7 @@ I don't think Apple realizes how badly the App Store approval process is broken.
 Managed solitude pays off.
 Resolve now to set aside some time each day (at least thirty minutes) to be completely by yourself.`}
                   </div>
-                </p>
+                </div>
                 <h2 className="subtitle mt-4 mb-2">
                   How to use this?
                 </h2>
@@ -216,10 +217,9 @@ Resolve now to set aside some time each day (at least thirty minutes) to be comp
                   Meine Clippings.tx (German Kindle)</a>.
 
                 <h2 className="subtitle mt-4 mb-2">
-                  How can I reach out to you?
+                  Source code:
                 </h2>
-
-                <a href="https://becausecurious.me/contact">https://becausecurious.me/contact</a>
+                <a href="https://github.com/Ashkanph/kindle_clippings_parser" target='_blank' rel='nofollow noopener'>https://github.com/Ashkanph/kindle_clippings_parser</a>
 
               </>
             }
@@ -230,7 +230,6 @@ Resolve now to set aside some time each day (at least thirty minutes) to be comp
                 <div>
                   <div>Oh, no, your file has an unexpected format and cannot be processed. </div>
                   <div>The error log is "{this.state.lastError}".</div>
-                  <div>If you <a href="https://becausecurious.me/contact">send me</a> this, I might be able to fix it. Sorry for the inconvenience!</div>
                 </div>
               </>
             }
@@ -247,7 +246,7 @@ Resolve now to set aside some time each day (at least thirty minutes) to be comp
               </h2>
               <button onClick={this.reset} className=" ml-3 button is-rounded is-danger is-outlined">Reset</button>
             </div>
-            <div>
+            <div className='checkbox-wrapper'>
               Show:
               <span className="m-2">
                 {this.createStateCheckbox('time', "showTime")},
@@ -259,6 +258,7 @@ Resolve now to set aside some time each day (at least thirty minutes) to be comp
 
               {this.createStateCheckbox('empty line after every note', "insertLineAfterNote")}
             </div>
+            <Statistics books={this.state.processedNotes}></Statistics>
             <Books books={this.state.processedNotes}
               showTime={this.state.showTime}
               showPosition={this.state.showPosition}
